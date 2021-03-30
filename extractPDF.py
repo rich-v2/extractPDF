@@ -161,7 +161,7 @@ def extract_tables(file, pages, flavor, mod): # Extract tables from document usi
             tables = camelot.read_pdf(file, pages=pages, flavor=flavor)
 
         # Filename adjustment
-        file = file.replace(".pdf","")
+        file = file.replace(".pdf","").strip()
         os.makedirs(os.path.join(file,"Tables"), exist_ok=True)
 
         # Go through tables and keep those with high accuracy
@@ -186,7 +186,7 @@ def extract_tables(file, pages, flavor, mod): # Extract tables from document usi
         elif flavor == "lattice":
             tables = tabula.read_pdf(file, pages=pages, lattice=True)
         
-        file = file.replace(".pdf","")
+        file = file.replace(".pdf","").strip()
         os.makedirs(os.path.join(file,"Tables"), exist_ok=True)
 
         if tables:
@@ -205,7 +205,7 @@ def thread_tables(file,pages, flavor, mod):
 # Open new window with interactive table preview
 def show_table(file,tab):
     # Find table
-    file = file.replace(".pdf","")
+    file = file.replace(".pdf","").strip()
     tabpath = os.path.join(file,"Tables",tab)
     df = pd.read_csv(tabpath)
     # Pop-up Window
