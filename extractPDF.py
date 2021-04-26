@@ -11,8 +11,22 @@ from pandastable import Table # Table Editing
 import threading # Multithreaded Extraction -> keeps window from freezing during extraction
 import winsound # Beep when done
 
+import pathlib # get current path for ocrmypdf
+
 from tkinter import *
 from tkinter import ttk # For Combobox
+
+# TODO: Convert Image PDF file to text -> can at least recognize tables
+def convert_pdf(file):
+    # Call ocrmypdf -> command line call needed
+    cdir = pathlib.Path().absolute()
+    os.chdir(cdir)
+    os.system('ocrmypdf "' + file +'" ocr_"' + file +'"')
+    winsound.Beep(500,1000)
+
+def thread_convert(file):
+    t = threading.Thread(target=convert_pdf,args=[file])
+    t.start()
 
 # Figures
 def extract_figures(file, pages):
@@ -261,7 +275,10 @@ if __name__=="__main__":
 
     files = [x for x in os.listdir() if re.search(".pdf",x)]
     file_list = ttk.Combobox(specify_frame, values = files)
-    file_list.place(relx=0.25,relheight=1,relwidth=0.5)
+    file_list.place(relx=0.25,relheight=1,relwidth=0.25)
+
+    convert_button = Button(specify_frame, text="Use the Tesseract", command=lambda: thread_convert(file_list.get()))
+    convert_button.place(relx=0.5,relheight=1,relwidth=0.25)
 
     reset_button = Button(specify_frame, text = "Reset", command=lambda: reset_all())
     reset_button.place(relx=0.75,relheight=1,relwidth=0.25)
